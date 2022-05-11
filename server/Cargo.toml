@@ -7,3 +7,5 @@ edition = "2021"
 
 [dependencies]
 ferris-says = "0.2"
+actix-web = "4.0.1"
+actix-cors = "0.6.1"

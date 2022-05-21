@@ -19,6 +19,13 @@ pub struct PostProduct<'a> {
 }
 
 #[derive(Debug, Deserialize, Serialize)]
+pub struct PutProductJson {
+    pub id: i32,
+    pub name: String,
+    pub title: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
 pub struct ProductJson {
     pub name: String,
     pub title: String,

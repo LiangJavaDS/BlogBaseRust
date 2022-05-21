@@ -13,26 +13,6 @@ mod schema;
 
 pub type Pool = r2d2::Pool<ConnectionManager<SqliteConnection>>;
 
-// #[get("/")]
-// async fn hello() -> impl Responder {
-//     HttpResponse::Ok().body("Hello world!")
-// }
-#[post("/echo")]
-async fn echo(req_body: String) -> impl Responder {
-    HttpResponse::Ok().body(req_body)
-}
-
-// async fn manual_hello() -> impl Responder {
-//     HttpResponse::Ok().body("Hey there!")
-// }
-
-#[get("/")]
-async fn get_text(txt: String) -> impl Responder {
-    HttpResponse::Ok()
-        .content_type("application/json")
-        .body(format!("成功接收到了:{}", txt))
-}
-
 #[actix_web::main]
 async fn main() -> std::io::Result<()> {
     dotenv::dotenv().ok();
@@ -55,10 +35,9 @@ async fn main() -> std::io::Result<()> {
             // )
             .app_data(web::Data::new(database_pool.clone()))
             .service(routes::add_product)
-            .service(get_text)
-        // .service(hello)
-        // .service(echo)
-        // .route("/hey", web::get().to(manual_hello))
+            .service(routes::delete_product)
+            .service(routes::update_product)
+            .service(routes::get_all_product)
     })
     .bind("127.0.0.1:8080")?
     .run()

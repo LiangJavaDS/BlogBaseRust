@@ -2,13 +2,13 @@ import styles from './index.less';
 import React from 'react';
 import axios from 'axios';
 import ArticleInput from "@/components/Article/articleInput";
-import { linAddress } from "@/utils.ts";
+import { joiningLinAddress } from "@/utils";
 
 export default function IndexPage() {
 
   const get = () => {
     // 上面的请求也可以这样做
-    axios.get(linAddress)
+    axios.get(joiningLinAddress("get_all_product"))
       .then(function (response) {
         console.log(response);
       })
@@ -20,7 +20,6 @@ export default function IndexPage() {
   return (
     <div>
       <ArticleInput />
-      <h1 className={styles.title}>Page index</h1>
       <button onClick={get}>点击获取</button>
     </div>
   );

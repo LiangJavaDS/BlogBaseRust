@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from "react";
 import { Form, Input, Button } from 'antd';
 import axios from 'axios';
-import { linAddress } from "@/utils.ts";
+import { joiningLinAddress, linAddress } from "@/utils";
 
 type article = {
     title: string,
@@ -22,9 +22,9 @@ const ArticleInput: FC<ArticleInputProps> = () => {
         if (!formItemObj) return
         const { title, content } = formItemObj as article
         if (title && content)
-            axios.post(`${linAddress}add_article`, {
+            axios.post(joiningLinAddress("add_product"), {
                 title,
-                content
+                name: content
             })
                 .then(function (response) {
                     console.log(response);

@@ -30,3 +30,39 @@ pub struct ProductJson {
     pub name: String,
     pub title: String,
 }
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct BlogJson {
+    pub title: String,
+    pub content: String,
+    pub tag: String,
+}
+
+#[derive(Debug, Insertable)]
+#[table_name = "blogs"]
+pub struct PostBlog<'a> {
+    pub id: &'a str,
+    pub user_id: &'a str,
+    pub title: &'a str,
+    pub content: &'a str,
+    pub tag: &'a str,
+    pub created_at: &'a str,
+    pub updated_at: &'a str,
+}
+
+#[derive(Debug, Serialize, Deserialize, Queryable)]
+pub struct Blog {
+    pub id: String,
+    pub user_id: String,
+    pub title: String,
+    pub content: String,
+    pub tag: Option<String>,
+    pub image: Option<Vec<u8>>,
+    pub image_url: Option<String>,
+    pub likes: Option<i32>,
+    pub page_view_num: Option<i32>,
+    pub commnet_id: Option<String>,
+    pub is_deleted: bool,
+    pub created_at: String,
+    pub updated_at: String,
+}

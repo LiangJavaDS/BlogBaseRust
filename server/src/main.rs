@@ -25,19 +25,22 @@ async fn main() -> std::io::Result<()> {
     // 请求
     HttpServer::new(move || {
         App::new()
-            // .wrap(
-            //     Cors::default()
-            //         .allowed_origin("http://localhost:8000")
-            //         .al lowed_methods(vec!["GET", "POST", "DELETE"])
-            //         .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
-            //         .allowed_header(header::CONTENT_TYPE)
-            //         .max_age(3600), // .supports_credentials(), // Allow the cookie auth.
-            // )
+            .wrap(
+                Cors::default()
+                    .allowed_origin("http://localhost:8000")
+                    .allowed_methods(vec!["GET", "POST", "DELETE"])
+                    .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
+                    .allowed_header(header::CONTENT_TYPE)
+                    .max_age(3600),
+                //  .supports_credentials(), // Allow the cookie auth.
+            )
+            // .app_data(web::PayloadConfig::default().limit(10000))
             .app_data(web::Data::new(database_pool.clone()))
             .service(routes::add_product)
             .service(routes::delete_product)
             .service(routes::update_product)
             .service(routes::get_all_product)
+            .service(routes::add_blog)
     })
     .bind("127.0.0.1:8080")?
     .run()

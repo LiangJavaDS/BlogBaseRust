@@ -181,6 +181,7 @@ async fn get_blog_titles(
         .map(|b| BlogCatalogue {
             id: b.id,
             title: b.title,
+            tag: b.tag,
             created_at: b.created_at,
             updated_at: b.updated_at,
         })

@@ -71,6 +71,7 @@ pub struct Blog {
 pub struct BlogCatalogue {
     pub id: String,
     pub title: String,
+    pub tag: Option<String>,
     pub created_at: String,
     pub updated_at: String,
 }

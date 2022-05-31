@@ -66,3 +66,19 @@ pub struct Blog {
     pub created_at: String,
     pub updated_at: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, Queryable)]
+pub struct BlogCatalogue {
+    pub id: String,
+    pub title: String,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct PutBlogJson {
+    pub id: String,
+    pub title: String,
+    pub content: String,
+    pub tag: String,
+}

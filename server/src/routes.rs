@@ -1,4 +1,7 @@
-use crate::models::{Blog, BlogJson, PostBlog, PostProduct, Product, ProductJson, PutProductJson};
+use crate::models::{
+    Blog, BlogCatalogue, BlogJson, PostBlog, PostProduct, Product, ProductJson, PutBlogJson,
+    PutProductJson,
+};
 use crate::Pool;
 
 use actix_web::{delete, error, get, post, put, web, Error, HttpResponse};
@@ -113,6 +116,7 @@ async fn update_product_by_id(
     Ok(result)
 }
 
+/** 新增博客 */
 #[post("add_blog")]
 pub async fn add_blog(
     pool: web::Data<Pool>,
@@ -153,4 +157,112 @@ async fn add_single_blog(
             Ok(result)
         }
     }
+}
+
+/** 获取所有博客标题 */
+#[get("/get_all_blog_titles")]
+pub async fn get_all_blog_titles(pool: web::Data<Pool>) -> Result<HttpResponse, Error> {
+    Ok(get_blog_titles(pool)
+        .await
+        .map(|product| HttpResponse::Ok().json(product))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+async fn get_blog_titles(
+    pool: web::Data<Pool>,
+) -> Result<Vec<BlogCatalogue>, diesel::result::Error> {
+    use crate::schema::blogs::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let all_blogs = blogs
+        .order(created_at.desc())
+        .load::<Blog>(&db_connection)?;
+    let result = all_blogs
+        .into_iter()
+        .map(|b| BlogCatalogue {
+            id: b.id,
+            title: b.title,
+            created_at: b.created_at,
+            updated_at: b.updated_at,
+        })
+        .collect();
+    Ok(result)
+}
+
+/** 获取一篇博客 */
+#[get("/get_blog/{id}")]
+pub async fn get_blog(
+    pool: web::Data<Pool>,
+    path: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    Ok(get_blog_by_id(pool, path)
+        .await
+        .map(|blog| HttpResponse::Ok().json(blog))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+async fn get_blog_by_id(
+    pool: web::Data<Pool>,
+    path: web::Path<String>,
+) -> Result<Blog, diesel::result::Error> {
+    use crate::schema::blogs::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let id_string = &path.into_inner();
+    println!("id={}", id_string);
+    let result = blogs.filter(id.eq(id_string)).first(&db_connection)?;
+    Ok(result)
+}
+
+/** 更新博客 */
+#[put("/update_blog")]
+pub async fn update_blog(
+    pool: web::Data<Pool>,
+    path: web::Json<PutBlogJson>,
+) -> Result<HttpResponse, Error> {
+    Ok(update_blog_by_id(pool, path)
+        .await
+        .map(|blog| HttpResponse::Ok().json(blog))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+async fn update_blog_by_id(
+    pool: web::Data<Pool>,
+    path: web::Json<PutBlogJson>,
+) -> Result<Blog, diesel::result::Error> {
+    use crate::schema::blogs::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let updated_blog = &path.0;
+    update(blogs.filter(id.eq(&updated_blog.id)))
+        .set((
+            title.eq(&updated_blog.title),
+            content.eq(&updated_blog.content),
+            tag.eq(&updated_blog.tag),
+        ))
+        .execute(&db_connection)?;
+    let result = blogs
+        .filter(id.eq(&updated_blog.id))
+        .first(&db_connection)?;
+    Ok(result)
+}
+
+/** 删除博客 */
+#[delete("delete_blog/{id}")]
+pub async fn delete_blog(
+    pool: web::Data<Pool>,
+    path: web::Path<String>,
+) -> Result<HttpResponse, Error> {
+    Ok(delete_blog_by_id(pool, path)
+        .await
+        .map(|blog| HttpResponse::Ok().json(blog))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+async fn delete_blog_by_id(
+    pool: web::Data<Pool>,
+    path: web::Path<String>,
+) -> Result<usize, diesel::result::Error> {
+    use crate::schema::blogs::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let id_string = &path.into_inner();
+    let result = delete(blogs.filter(id.eq(id_string))).execute(&db_connection)?;
+    Ok(result)
 }

@@ -1,23 +1,8 @@
 import React, { FC, useCallback, useEffect, useState } from "react";
 import { Form, Input, Button } from 'antd';
-import { getDataByRequestAddress } from "@/utils/index";
+import { getRequest } from "@/utils/index";
 import { useLocation } from "umi";
-
-type Article = {
-    id: string,
-    user_id: string,
-    title: string,
-    content: string,
-    tag?: string,
-    image?: string,
-    image_url?: string,
-    likes?: number,
-    page_view_num?: number,
-    commnet_id?: string,
-    is_deleted: boolean,
-    created_at: string,
-    updated_at: string,
-}
+import { Article } from "../type";
 
 type ArticleDetailProps = {}
 /** 文章详情 */
@@ -30,13 +15,13 @@ const ArticleDetail: FC<ArticleDetailProps> = () => {
     useEffect(() => {
         if (!blogId) return
         (async () => {
-            const data = await getDataByRequestAddress<Article>(`get_blog/${blogId}`)
+            const data = await getRequest<Article>(`get_blog/${blogId}`)
             setArticle(data)
         })()
     }, [])
 
     return <div>
-        <h1>我是详情1</h1>
+        <h1>详情页</h1>
         <h1>{article?.title}</h1>
         <p>{article?.content}</p>
     </div>

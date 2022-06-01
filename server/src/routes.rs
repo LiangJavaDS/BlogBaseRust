@@ -42,7 +42,7 @@ async fn add_single_product(
             insert_into(product)
                 .values(&new_product)
                 .execute(&db_connection)
-                .expect("Errow saving new product");
+                .expect("Error saving new product");
             let result = product.order(id.desc()).first(&db_connection).unwrap();
             Ok(result)
         }
@@ -152,7 +152,7 @@ async fn add_single_blog(
             insert_into(blogs)
                 .values(&new_blog)
                 .execute(&db_connection)
-                .expect("Errow saving new blog");
+                .expect("Error saving new blog");
             let result = blogs.order(id.desc()).first(&db_connection).unwrap();
             Ok(result)
         }

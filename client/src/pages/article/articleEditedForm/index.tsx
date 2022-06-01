@@ -1,12 +1,7 @@
 import React, { FC, useCallback } from "react";
-import { Form, Input, Button } from 'antd';
-import axios from 'axios';
-import { joiningLinAddress, linAddress } from "@/utils";
-
-type article = {
-    title: string,
-    content: string
-}
+import { Form, Input, Button, message } from 'antd';
+import { Article } from "../type";
+import { getRequest, postRequest } from "@/utils/index";
 
 type EditedArticleFormProps = {}
 /** 文章录入 */
@@ -15,36 +10,36 @@ const EditedArticleForm: FC<EditedArticleFormProps> = () => {
     const [form] = Form.useForm();
 
     const { TextArea } = Input;
+
     const save = useCallback(async () => {
-        // toDo post请求
         const formItemObj = await form.validateFields()
-        console.log(formItemObj);
         if (!formItemObj) return
-        const { title, content } = formItemObj as article
-        if (title && content)
-            axios.post(joiningLinAddress("add_product"), {
-                title,
-                name: content
-            })
-                .then(function (response) {
-                    console.log(response);
-                })
-                .catch(function (error) {
-                    console.log(error);
-                });
+        const { title, content, tag } = formItemObj as Article
+        if (!title || !content || !tag) return
+        const data = await postRequest("add_blog", { title, tag, content })
+        if (!data) return
+        message.success("保存成功");
+        history.back();
     }, [])
 
     return <div>
         <Form form={form} name="basic">
             <Form.Item
-                label="Title"
+                label="标题"
                 name="title"
                 rules={[{ required: true, message: '请输入文章标题!' }]}
             >
                 <Input />
             </Form.Item>
             <Form.Item
-                label="Content"
+                label="标签"
+                name="tag"
+                rules={[{ required: true, message: '请输入文章标签!' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="内容"
                 name="content"
                 rules={[{ required: true, message: '文章内容不能为空!' }]}
             >

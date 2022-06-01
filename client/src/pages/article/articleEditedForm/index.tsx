@@ -1,4 +1,4 @@
-import React, { FC, useCallback, useEffect } from "react";
+import React, { FC, useCallback } from "react";
 import { Form, Input, Button } from 'antd';
 import axios from 'axios';
 import { joiningLinAddress, linAddress } from "@/utils";
@@ -8,14 +8,13 @@ type article = {
     content: string
 }
 
-type ReadOnlyArticleProps = {}
+type EditedArticleFormProps = {}
 /** 文章录入 */
-const ReadOnlyArticle: FC<ReadOnlyArticleProps> = () => {
+const EditedArticleForm: FC<EditedArticleFormProps> = () => {
 
     const [form] = Form.useForm();
 
     const { TextArea } = Input;
-
     const save = useCallback(async () => {
         // toDo post请求
         const formItemObj = await form.validateFields()
@@ -28,20 +27,31 @@ const ReadOnlyArticle: FC<ReadOnlyArticleProps> = () => {
                 name: content
             })
                 .then(function (response) {
-                    console.log('7878', response);
+                    console.log(response);
                 })
                 .catch(function (error) {
                     console.log(error);
                 });
     }, [])
 
-
-    useEffect(() => {
-        console.log("我加载了")
-    }, [])
-
     return <div>
-        <h1>我是详情1</h1>
+        <Form form={form} name="basic">
+            <Form.Item
+                label="Title"
+                name="title"
+                rules={[{ required: true, message: '请输入文章标题!' }]}
+            >
+                <Input />
+            </Form.Item>
+            <Form.Item
+                label="Content"
+                name="content"
+                rules={[{ required: true, message: '文章内容不能为空!' }]}
+            >
+                <TextArea autoSize placeholder="请输入内容" />
+            </Form.Item>
+        </Form>
+        <Button onClick={save}>保存</Button>
     </div>
 }
-export default ReadOnlyArticle
+export default EditedArticleForm

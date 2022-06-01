@@ -1,7 +1,12 @@
 export default [
     {
-        path: '/article',
+        path: '/',
+        name: '目录',
+        component: '@/pages/article/articleCatalogue/index'
+    },
+    {
+        path: '/articleDetail',
         name: '详情',
-        component: './article/articleDetail'
+        component: '@/pages/article/articleDetail/index'
     }
 ]

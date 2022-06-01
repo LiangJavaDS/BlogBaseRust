@@ -10,7 +10,6 @@ CREATE TABLE blogs(
     image_url VARCHAR(200),
     likes INTEGER,
     page_view_num INTEGER,
-    commnet_id CHARACTER(36),
     is_deleted BOOLEAN NOT NULL DEFAULT 'f',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL

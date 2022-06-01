@@ -9,7 +9,6 @@ table! {
         image_url -> Nullable<Text>,
         likes -> Nullable<Integer>,
         page_view_num -> Nullable<Integer>,
-        commnet_id -> Nullable<Text>,
         is_deleted -> Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,

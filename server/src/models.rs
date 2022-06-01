@@ -61,7 +61,6 @@ pub struct Blog {
     pub image_url: Option<String>,
     pub likes: Option<i32>,
     pub page_view_num: Option<i32>,
-    pub commnet_id: Option<String>,
     pub is_deleted: bool,
     pub created_at: String,
     pub updated_at: String,

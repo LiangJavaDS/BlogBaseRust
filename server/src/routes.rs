@@ -1,6 +1,6 @@
 use crate::models::{
-    Blog, BlogCatalogue, BlogJson, PostBlog, PostProduct, Product, ProductJson, PutBlogJson,
-    PutProductJson,
+    Blog, BlogCatalogue, BlogJson, PostBlog, PostProduct, PostUser, Product, ProductJson,
+    PutBlogJson, PutProductJson, PutUserJson, User, UserJson,
 };
 use crate::Pool;
 
@@ -265,5 +265,88 @@ async fn delete_blog_by_id(
     let db_connection = pool.get().unwrap();
     let id_string = &path.into_inner();
     let result = delete(blogs.filter(id.eq(id_string))).execute(&db_connection)?;
+    Ok(result)
+}
+
+#[post("/add_user")]
+pub async fn add_user(
+    pool: web::Data<Pool>,
+    item: web::Json<UserJson>,
+) -> Result<HttpResponse, Error> {
+    Ok(add_single_user(pool, item)
+        .await
+        .map(|user| HttpResponse::Created().json(user))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+pub async fn add_single_user(
+    pool: web::Data<Pool>,
+    item: web::Json<UserJson>,
+) -> Result<User, diesel::result::Error> {
+    use crate::schema::users::dsl::*;
+    let db_connection = pool.get().unwrap();
+    match users
+        .filter(username.eq(&item.username))
+        .first::<User>(&db_connection)
+    {
+        Ok(result) => Ok(result),
+        Err(_) => {
+            let new_user = PostUser {
+                id: &Uuid::new_v4().as_hyphenated().to_string(),
+                username: &item.username,
+                password: &item.password,
+                email: &item.email,
+                // phone:&item.phone,
+                // avatar:&item.avatar,
+                // avatar_url:&item.avatar_url,
+                // slogan:&item.slogan,
+                is_deleted: &false,
+                created_at: &format!("{}", chrono::Local::now().naive_local()),
+                updated_at: &format!("{}", chrono::Local::now().naive_local()),
+            };
+            insert_into(users)
+                .values(&new_user)
+                .execute(&db_connection)
+                .expect("Error saving new user");
+            let result = users
+                .order(created_at.desc())
+                .first(&db_connection)
+                .unwrap();
+            Ok(result)
+            // if result {
+            //     Ok("保存成功")
+            // }
+            // Err("保存失败")
+        }
+    }
+}
+
+#[put("/update_user")]
+pub async fn update_user(
+    pool: web::Data<Pool>,
+    item: web::Json<PutUserJson>,
+) -> Result<HttpResponse, Error> {
+    Ok(update_user_by_id(pool, item)
+        .await
+        .map(|user| HttpResponse::Ok().json(user))
+        .map_err(|e| error::ErrorBadRequest(e))?)
+}
+
+async fn update_user_by_id(
+    pool: web::Data<Pool>,
+    path: web::Json<PutUserJson>,
+) -> Result<User, diesel::result::Error> {
+    use crate::schema::users::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let updated_user = &path.0;
+    update(users.filter(id.eq(&updated_user.id)))
+        .set((
+            password.eq(&updated_user.password),
+            email.eq(&updated_user.email),
+        ))
+        .execute(&db_connection)?;
+    let result = users
+        .filter(id.eq(&updated_user.id))
+        .first(&db_connection)?;
     Ok(result)
 }

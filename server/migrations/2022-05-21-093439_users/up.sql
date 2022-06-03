@@ -1,14 +1,14 @@
 -- Your SQL goes here
 CREATE TABLE IF NOT EXISTS users(
     id CHARACTER(36) NOT NULL PRIMARY KEY,
-    username VARCHAR(50),
-    password VARCHAR(50),
-    email VARCHAR(60),
+    username VARCHAR(50) NOT NULL,
+    password VARCHAR(50) NOT NULL,
+    email VARCHAR(60) NOT NULL,
     phone VARCHAR(60),
     avatar BLOB,
     avatar_url VARCHAR(200),
     slogan VARCHAR(60),
-    is_deleted INTEGER,
+    is_deleted BOOLEAN NOT NULL DEFAULT 'f',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP NOT NULL
 )

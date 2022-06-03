@@ -27,14 +27,14 @@ table! {
 table! {
     users (id) {
         id -> Text,
-        username -> Nullable<Text>,
-        password -> Nullable<Text>,
-        email -> Nullable<Text>,
+        username -> Text,
+        password -> Text,
+        email -> Text,
         phone -> Nullable<Text>,
         avatar -> Nullable<Binary>,
         avatar_url -> Nullable<Text>,
         slogan -> Nullable<Text>,
-        is_deleted -> Nullable<Integer>,
+        is_deleted -> Bool,
         created_at -> Timestamp,
         updated_at -> Timestamp,
     }

@@ -45,6 +45,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::get_blog)
             .service(routes::update_blog)
             .service(routes::delete_blog)
+            .service(routes::add_user)
     })
     .bind("127.0.0.1:8080")?
     .run()

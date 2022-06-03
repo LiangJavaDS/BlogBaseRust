@@ -1,8 +1,8 @@
 export default [
     {
         path: '/',
-        name: '博客目录',
-        component: '@/pages/article/articleCatalogue/index'
+        name: '首页',
+        component: '@/pages/index'
     },
     {
         path: '/articleDetail',
@@ -13,5 +13,10 @@ export default [
         path: '/articleEditedForm',
         name: '新增博客',
         component: '@/pages/article/articleEditedForm/index'
+    },
+    {
+        path: '/addUser',
+        name: '新增用户',
+        component: '@/pages/user/userForm'
     }
 ]

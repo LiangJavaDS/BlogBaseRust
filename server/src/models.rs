@@ -82,3 +82,44 @@ pub struct PutBlogJson {
     pub content: String,
     pub tag: String,
 }
+
+#[derive(Debug, Serialize, Deserialize, Queryable)]
+pub struct User {
+    pub id: String,
+    pub username: String,
+    pub password: String,
+    pub email: String,
+    pub phone: Option<String>,
+    pub avatar: Option<Vec<u8>>,
+    pub avatar_url: Option<String>,
+    pub slogan: Option<String>,
+    pub is_deleted: bool,
+    pub created_at: String,
+    pub updated_at: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct UserJson {
+    pub username: String,
+    pub password: String,
+    pub email: String,
+}
+
+#[derive(Debug, Insertable)]
+#[table_name = "users"]
+pub struct PostUser<'a> {
+    pub id: &'a str,
+    pub username: &'a str,
+    pub password: &'a str,
+    pub email: &'a str,
+    pub is_deleted: &'a bool,
+    pub created_at: &'a str,
+    pub updated_at: &'a str,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct PutUserJson {
+    pub id: String,
+    pub password: String,
+    pub email: String,
+}

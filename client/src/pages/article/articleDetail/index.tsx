@@ -3,6 +3,7 @@ import { Form, Input, Button } from 'antd';
 import { getRequest } from "@/utils/index";
 import { useLocation } from "umi";
 import { Article } from "../type";
+import ReactMarkdown from "react-markdown";
 
 type ArticleDetailProps = {}
 /** 文章详情 */
@@ -23,7 +24,7 @@ const ArticleDetail: FC<ArticleDetailProps> = () => {
     return <div>
         <h1>详情页</h1>
         <h1>{article?.title}</h1>
-        <p>{article?.content}</p>
+        <ReactMarkdown children={article?.content ?? '查询数据失败'} />
     </div>
 }
 export default ArticleDetail

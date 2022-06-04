@@ -4,9 +4,9 @@ import "react-markdown-editor-lite/lib/index.css";
 import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { Article } from "../type";
-import { getRequest, postRequest } from "@/utils/index";
+import { postRequest } from "@/utils/index";
 
-/** 文章录入-markDown */
+/** 文章录入-MarkDown */
 const EditedArticle = () => {
     const [form] = Form.useForm();
     const mdEditor = React.useRef(null);
@@ -24,6 +24,9 @@ const EditedArticle = () => {
     }, [value])
 
     const handleEditorChange = useCallback(({ html, text }: { html: string, text: string }) => {
+        // 过滤
+        // const newValue = text.replace(/\d/g, "");
+        // console.log(newValue);
         setValue(text);
     }, []);
 

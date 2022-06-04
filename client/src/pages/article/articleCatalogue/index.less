@@ -1,5 +1,34 @@
-.hoverTitle {
+.title {
     &:hover {
+        cursor: pointer;
         text-decoration: underline;
+    }
+}
+
+.entry {
+    .metaContainer {
+        display: flex;
+        font-size: 16px;
+        line-height: 19px;
+
+        .date {
+            display: flex;
+            align-items: center;
+            color: #86909c;
+
+            &::after {
+                display: block;
+                width: 2px;
+                height: 16px;
+                background: #e5e6eb;
+                content: " ";
+                margin: 0 10px;
+            }
+        }
+
+        .tag {
+            color: #86909c;
+            cursor: text;
+        }
     }
 }

@@ -1,16 +1,16 @@
 import React, { FC, memo, useCallback, useEffect, useState } from "react";
-import moment, { Moment } from "moment";
 import { getRequest } from "@/utils/index";
-import { Button } from "antd";
 import { history } from 'umi';
 import styles from './index.less';
+import { formatTime } from "@/utils/time";
+import classNames from "classnames";
 
 type ArticleSummary = {
     id: string,
     title: string,
     tag: string,
-    created_at: Moment,
-    updated_at: Moment,
+    created_at: string,
+    updated_at: string,
 }
 
 type ArticleOverviewProps = {
@@ -29,12 +29,17 @@ const ArticleOverview: FC<ArticleOverviewProps> = memo(({ article }) => {
         });
     }, [])
 
-    return <div>
-        <h1 onClick={() => goToArticleDetail(article.id)} className={styles.hoverTitle}>{article.title}</h1>
-        <h2>{article.tag}</h2>
-        <span>创建时间：{moment(article.created_at).format("YYYY-MM-DD")}</span>
-        <span>修改时间：{moment(article.updated_at).format("YYYY-MM-DD")}</span>
-    </div>
+    return <li>
+        <div className={styles.entry}>
+            <div className={styles.metaContainer}>
+                <div className={styles.date}>
+                    {formatTime(article.created_at)}
+                </div>
+                <a className={styles.tag}>{article.tag}</a>
+            </div>
+            <h1 className={styles.title} onClick={() => goToArticleDetail(article.id)} >{article.title}</h1>
+        </div>
+    </li>
 })
 
 type ReadOnlyArticleProps = {}
@@ -44,10 +49,6 @@ const ArticleCatalogue: FC<ReadOnlyArticleProps> = memo(() => {
 
     const [articleCatalogue, setArticleCatalogue] = useState<ArticleSummary[]>([])
 
-    const addBlog = useCallback(() => {
-        history.push({ pathname: '/articleEditedForm' });
-    }, [])
-
     useEffect(() => {
         (async () => {
             const data = await getRequest<ArticleSummary[]>("get_all_blog_titles")
@@ -56,7 +57,6 @@ const ArticleCatalogue: FC<ReadOnlyArticleProps> = memo(() => {
     }, [])
 
     return <div>
-        <Button onClick={addBlog}>新增博客</Button>
         {articleCatalogue.map(article => <ArticleOverview key={article.id} article={article} />)}
     </div>
 })

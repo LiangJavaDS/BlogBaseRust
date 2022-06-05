@@ -3,7 +3,6 @@ import { getRequest } from "@/utils/index";
 import { history } from 'umi';
 import styles from './index.less';
 import { formatTime } from "@/utils/time";
-import classNames from "classnames";
 
 type ArticleSummary = {
     id: string,

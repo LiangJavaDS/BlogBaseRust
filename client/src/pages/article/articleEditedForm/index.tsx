@@ -5,6 +5,7 @@ import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { Article } from "../type";
 import { postRequest } from "@/utils/index";
+import styles from './index.less';
 
 /** 文章录入-MarkDown */
 const EditedArticle = () => {
@@ -48,11 +49,9 @@ const EditedArticle = () => {
                     <Input />
                 </Form.Item>
                 <Editor
+                    className={styles.editor}
                     ref={mdEditor}
                     value={value}
-                    style={{
-                        height: "500px"
-                    }}
                     onChange={handleEditorChange}
                     renderHTML={text => {
                         return <ReactMarkdown children={text} />

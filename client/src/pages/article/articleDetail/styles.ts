@@ -1,19 +1,23 @@
-.main {
+import styled from 'styled-components';
+
+
+export const BlogWrapper = styled.div`   
     position: relative;
     margin: 0 auto;
     width: 100%;
     max-width: 960px;
-}
+`
 
-.header {
+export const Title = styled.h1`
     position: relative;
-    height: 5rem;
-}
+    height: 4rem;
+    text-align: center;
+`
 
-.foot {
+export const Footer = styled.div`
     position: absolute;
     height: 3rem;
     bottom: 0;
     width: 100%;
     max-width: 960px;
-}
+`

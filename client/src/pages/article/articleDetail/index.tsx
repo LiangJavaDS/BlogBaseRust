@@ -4,6 +4,7 @@ import { getRequest } from "@/utils/index";
 import { useLocation } from "umi";
 import { Article } from "../type";
 import ReactMarkdown from "react-markdown";
+import { BlogWrapper, Title } from "./styles";
 
 type ArticleDetailProps = {}
 /** 文章详情 */
@@ -21,10 +22,9 @@ const ArticleDetail: FC<ArticleDetailProps> = () => {
         })()
     }, [])
 
-    return <div>
-        <h1>详情页</h1>
-        <h1>{article?.title}</h1>
+    return <BlogWrapper>
+        <Title>{article?.title}</Title>
         <ReactMarkdown children={article?.content ?? '查询数据失败'} />
-    </div>
+    </BlogWrapper>
 }
 export default ArticleDetail

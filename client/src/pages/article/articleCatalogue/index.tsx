@@ -1,8 +1,8 @@
 import React, { FC, memo, useCallback, useEffect, useState } from "react";
 import { getRequest } from "@/utils/index";
 import { history } from 'umi';
-import styles from './index.less';
 import { formatTime } from "@/utils/time";
+import { Title, DateWrapper, Link, MetaWrapper } from "./styles";
 
 type ArticleSummary = {
     id: string,
@@ -28,17 +28,19 @@ const ArticleOverview: FC<ArticleOverviewProps> = memo(({ article }) => {
         });
     }, [])
 
-    return <li>
-        <div className={styles.entry}>
-            <div className={styles.metaContainer}>
-                <div className={styles.date}>
-                    {formatTime(article.created_at)}
-                </div>
-                <a className={styles.tag}>{article.tag}</a>
-            </div>
-            <h1 className={styles.title} onClick={() => goToArticleDetail(article.id)} >{article.title}</h1>
-        </div>
-    </li>
+    return (
+        <li>
+            <div>
+                <MetaWrapper>
+                    <DateWrapper>{formatTime(article.created_at)}</DateWrapper>
+                    <Link>{article.tag}</Link>
+                </MetaWrapper>
+                <Title onClick={() => goToArticleDetail(article.id)} >
+                    {article.title}
+                </Title>
+            </div >
+        </li >
+    )
 })
 
 type ReadOnlyArticleProps = {}

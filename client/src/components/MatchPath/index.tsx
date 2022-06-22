@@ -4,10 +4,11 @@ import { Button } from 'antd';
 import { history } from 'umi';
 import { RouteProps } from 'umi/node_modules/@types/react-router';
 import { connect } from 'dva';
-import styles from './index.less';
 import ArticleDetail from '@/pages/article/articleDetail/index';
 import ArticleEditedForm from '@/pages/article/articleEditedForm/index';
 import UserForm from '@/pages/user/userForm';
+import { Header, Body, Footer } from './styles';
+
 
 type MatchPathProps = {
     route: RouteProps;
@@ -42,19 +43,19 @@ const MatchPath: FC<MatchPathProps> = ({ route }) => {
 
     return (
         <>
-            <div className={styles.header}>
+            <Header>
                 我是头部
                 <Button onClick={goToAddUser}>新增用户</Button>
                 <Button onClick={addBlog}>新增博客</Button>
-            </div>
-            <div className={styles.main}>
+            </Header>
+            <Body>
                 {bodyComponent}
-            </div>
-            <div className={styles.foot}>
+            </Body>
+            <Footer>
                 我是底部
-            </div>
+            </Footer>
         </>
     );
 }
 
-export default connect((user) => ({ user }))(MatchPath);
+export default connect((user: any) => ({ user }))(MatchPath);

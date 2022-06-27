@@ -18,5 +18,10 @@ export default [
         path: '/addUser',
         name: '新增用户',
         component: '@/pages/index',
+    },
+    {
+        path: '/login',
+        name: '登录',
+        component: '@/pages/login/index',
     }
 ]

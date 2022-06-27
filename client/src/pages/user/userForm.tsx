@@ -1,6 +1,6 @@
 import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
-import { getRequest, postRequest } from "@/utils/index";
+import { postRequest } from "@/utils/axios";
 
 type UserFormProps = {}
 /** 用户录入 */

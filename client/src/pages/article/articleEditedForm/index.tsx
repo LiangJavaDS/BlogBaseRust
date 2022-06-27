@@ -4,8 +4,8 @@ import "react-markdown-editor-lite/lib/index.css";
 import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { Article } from "../type";
-import { postRequest } from "@/utils/index";
 import styles from './index.less';
+import apiClient from '@/utils/axios';
 
 /** 文章录入-MarkDown */
 const EditedArticle = () => {
@@ -18,9 +18,13 @@ const EditedArticle = () => {
         if (!formItemObj) return
         const { title, tag } = formItemObj as Article
         if (!title || !value || !tag) return
-        const data = await postRequest("add_blog", { title, tag, content: value })
-        if (!data) return
-        message.success("保存成功");
+        // const data = await postRequest("add_blog", { title, tag, content: value })
+        apiClient
+            .post("add_blog", { title, tag, content: value })
+            .then((res) => {
+                if (res) message.success("保存成功");
+            })
+            .catch((err) => { });
         history.back();
     }, [value])
 

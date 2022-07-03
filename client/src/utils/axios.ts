@@ -51,7 +51,7 @@ instance.interceptors.request.use(
 
         if (config.method?.includes('post') && config.headers) {
             const token = getToken();
-            if (token) config.headers.Authorization = `Bear ${token}`;
+            if (token) config.headers.Authorization = `Bearer ${token}`;
         }
         return config
     },

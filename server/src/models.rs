@@ -1,7 +1,11 @@
 use crate::schema::*;
 // 序列化、反序列化
+use actix_web::error;
+use derive_more::{Display, Error};
 use serde::{Deserialize, Serialize};
 
+// Use default implementation for `error_response()` method
+impl error::ResponseError for MyError {}
 #[derive(Debug, Serialize, Deserialize, Queryable)]
 pub struct Product {
     pub id: i32,
@@ -122,4 +126,28 @@ pub struct PutUserJson {
     pub id: String,
     pub password: String,
     pub email: String,
+}
+
+#[derive(Deserialize)]
+pub struct LoginJson {
+    pub username: String,
+    pub password: String,
+}
+
+#[derive(Serialize)]
+pub struct LoginResponse {
+    pub token: String,
+}
+
+#[derive(Debug, Deserialize, Serialize)]
+pub struct Claims {
+    pub uid: String,
+    pub user_name: String,
+    pub exp: usize,
+}
+
+#[derive(Debug, Display, Error)]
+#[display(fmt = "my error: {}", info)]
+pub struct MyError {
+    info: &'static str,
 }

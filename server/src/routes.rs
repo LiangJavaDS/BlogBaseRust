@@ -1,14 +1,16 @@
 use crate::models::{
-    Blog, BlogCatalogue, BlogJson, PostBlog, PostProduct, PostUser, Product, ProductJson,
-    PutBlogJson, PutProductJson, PutUserJson, User, UserJson,
+    Blog, BlogCatalogue, BlogJson, Claims, LoginJson, LoginResponse, PostBlog, PostProduct,
+    PostUser, Product, ProductJson, PutBlogJson, PutProductJson, PutUserJson, User, UserJson,
 };
 use crate::Pool;
 
-use actix_web::{delete, error, get, post, put, web, Error, HttpResponse};
-use anyhow::Result;
+use crate::jwtError::{self, AuthError};
+use actix_web::{delete, get, post, put, web, Error, HttpRequest, HttpResponse};
+use chrono::Utc;
 use diesel::dsl::insert_into;
 use diesel::prelude::*;
 use diesel::{delete, update, RunQueryDsl};
+use jsonwebtoken::{decode, encode, Algorithm, DecodingKey, EncodingKey, Header, Validation};
 use uuid::Uuid;
 
 #[post("/add_product")]
@@ -19,7 +21,7 @@ pub async fn add_product(
     Ok(add_single_product(pool, item)
         .await
         .map(|product| HttpResponse::Created().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn add_single_product(
@@ -54,7 +56,7 @@ pub async fn get_all_product(pool: web::Data<Pool>) -> Result<HttpResponse, Erro
     Ok(get_all(pool)
         .await
         .map(|product| HttpResponse::Ok().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn get_all(pool: web::Data<Pool>) -> Result<Vec<Product>, diesel::result::Error> {
@@ -72,7 +74,7 @@ pub async fn delete_product(
     Ok(delete_product_by_id(pool, path)
         .await
         .map(|product| HttpResponse::Ok().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn delete_product_by_id(
@@ -95,7 +97,7 @@ pub async fn update_product(
     Ok(update_product_by_id(pool, path)
         .await
         .map(|product| HttpResponse::Ok().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn update_product_by_id(
@@ -119,13 +121,17 @@ async fn update_product_by_id(
 /** 新增博客 */
 #[post("add_blog")]
 pub async fn add_blog(
+    req: HttpRequest,
     pool: web::Data<Pool>,
     item: web::Json<BlogJson>,
 ) -> Result<HttpResponse, Error> {
-    Ok(add_single_blog(pool, item)
-        .await
-        .map(|product| HttpResponse::Created().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+    match authorize(&req) {
+        Ok(s) => Ok(add_single_blog(pool, item)
+            .await
+            .map(|product| HttpResponse::Created().json(product))
+            .map_err(|e| actix_web::error::ErrorBadRequest(e))?),
+        Err(e) => Err(actix_web::error::ErrorBadRequest(e)),
+    }
 }
 
 async fn add_single_blog(
@@ -165,7 +171,7 @@ pub async fn get_all_blog_titles(pool: web::Data<Pool>) -> Result<HttpResponse, 
     Ok(get_blog_titles(pool)
         .await
         .map(|product| HttpResponse::Ok().json(product))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn get_blog_titles(
@@ -198,7 +204,7 @@ pub async fn get_blog(
     Ok(get_blog_by_id(pool, path)
         .await
         .map(|blog| HttpResponse::Ok().json(blog))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn get_blog_by_id(
@@ -208,7 +214,6 @@ async fn get_blog_by_id(
     use crate::schema::blogs::dsl::*;
     let db_connection = pool.get().unwrap();
     let id_string = &path.into_inner();
-    println!("id={}", id_string);
     let result = blogs.filter(id.eq(id_string)).first(&db_connection)?;
     Ok(result)
 }
@@ -222,7 +227,7 @@ pub async fn update_blog(
     Ok(update_blog_by_id(pool, path)
         .await
         .map(|blog| HttpResponse::Ok().json(blog))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn update_blog_by_id(
@@ -254,7 +259,7 @@ pub async fn delete_blog(
     Ok(delete_blog_by_id(pool, path)
         .await
         .map(|blog| HttpResponse::Ok().json(blog))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn delete_blog_by_id(
@@ -276,7 +281,7 @@ pub async fn add_user(
     Ok(add_single_user(pool, item)
         .await
         .map(|user| HttpResponse::Created().json(user))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 pub async fn add_single_user(
@@ -329,7 +334,7 @@ pub async fn update_user(
     Ok(update_user_by_id(pool, item)
         .await
         .map(|user| HttpResponse::Ok().json(user))
-        .map_err(|e| error::ErrorBadRequest(e))?)
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
 }
 
 async fn update_user_by_id(
@@ -349,4 +354,94 @@ async fn update_user_by_id(
         .filter(id.eq(&updated_user.id))
         .first(&db_connection)?;
     Ok(result)
+}
+
+#[post("/login")]
+pub async fn login_handler(
+    pool: web::Data<Pool>,
+    login_json: web::Json<LoginJson>,
+) -> Result<HttpResponse, Error> {
+    Ok(login(pool, login_json)
+        .await
+        .map(|token| HttpResponse::Created().json(token))
+        .map_err(|e| actix_web::error::ErrorBadRequest(e))?)
+}
+
+/** 登录 */
+pub async fn login(
+    pool: web::Data<Pool>,
+    login_json: web::Json<LoginJson>,
+) -> Result<LoginResponse, Error> {
+    use crate::schema::users::dsl::*;
+    let db_connection = pool.get().unwrap();
+    let user = &login_json.0;
+    let username_str = &user.username;
+    let password_str = &user.password;
+    let target_user: Result<User, diesel::result::Error> = users
+        .filter(username.eq(username_str))
+        .filter(password.eq(password_str))
+        .limit(1)
+        .first(&db_connection);
+
+    match target_user {
+        Ok(u) => {
+            let token = create_jwt(&username_str, &password_str)
+                .map_err(|e| actix_web::error::ErrorBadRequest(e))?;
+            let res = LoginResponse { token: token };
+            Ok(res)
+        }
+        Err(e) => Err(actix_web::error::ErrorBadRequest(e)),
+    }
+}
+
+/** token验证 */
+const JWT_SECRET: &[u8] = b"secret";
+type JwtResult<T> = std::result::Result<T, jwtError::AuthError>;
+/** 生成token */
+pub fn create_jwt(uid: &str, user_name: &String) -> JwtResult<String> {
+    let expiration = Utc::now()
+        .checked_add_signed(chrono::Duration::seconds(60))
+        .expect("valid timestamp")
+        .timestamp();
+
+    let claims = Claims {
+        uid: uid.to_owned(),
+        user_name: user_name.to_string(),
+        exp: expiration as usize,
+    };
+    let header = Header::new(Algorithm::HS512);
+    encode(&header, &claims, &EncodingKey::from_secret(JWT_SECRET))
+        .map_err(|_| jwtError::AuthError::JWTTokenCreationError)
+}
+
+const BEARER: &str = "Bearer ";
+/** 解析token */
+fn jwt_from_header(_req: &HttpRequest) -> Result<String, AuthError> {
+    let header = _req.headers().get("authorization").unwrap().to_str().ok();
+    let auth_header = match std::str::from_utf8(header.unwrap().as_bytes()) {
+        Ok(v) => v,
+        Err(_) => return Err(AuthError::NoAuthHeaderError),
+    };
+    if !auth_header.starts_with(BEARER) {
+        return Err(AuthError::InvalidAuthHeaderError);
+    }
+    Ok(auth_header.trim_start_matches(BEARER).to_owned())
+}
+
+/** token验证 */
+fn authorize(_req: &HttpRequest) -> Result<String, Error> {
+    match jwt_from_header(_req) {
+        Ok(token) => {
+            println!("token {:?}", token);
+            let decoded = decode::<Claims>(
+                &token,
+                &DecodingKey::from_secret(JWT_SECRET),
+                &Validation::new(Algorithm::HS512),
+            )
+            .map_err(|e| actix_web::error::ErrorBadRequest(e))?;
+            println!("dec {:?}", decoded);
+            Ok(decoded.claims.user_name)
+        }
+        Err(e) => return Err(actix_web::error::ErrorBadRequest(e)),
+    }
 }

@@ -1,12 +1,13 @@
 use actix_cors::Cors;
 use actix_web::http::header;
-use actix_web::{get, post, web, App, HttpResponse, HttpServer, Responder};
+use actix_web::{web, App, HttpServer};
 use diesel::r2d2::{self, ConnectionManager};
 use diesel::SqliteConnection;
 
 #[macro_use]
 extern crate diesel;
 
+mod jwtError;
 mod models;
 mod routes;
 mod schema;
@@ -35,6 +36,17 @@ async fn main() -> std::io::Result<()> {
                 //  .supports_credentials(), // Allow the cookie auth.
             )
             // .app_data(web::PayloadConfig::default().limit(10000))
+            // .wrap_fn(|req, srv| {
+            //     use actix_web::dev::Service;
+            //     let targetPath = req.path();
+            //     if (targetPath.starts_with("/add_blog")) {
+            //         match routes::jwt_from_header(req) {
+            //             Ok(result) => srv.call(req).map(|res| res),
+            //             Err(e) => unauth,
+            //         }
+            //     }
+            //     srv.call(req).map(|res| res)
+            // })
             .app_data(web::Data::new(database_pool.clone()))
             .service(routes::add_product)
             .service(routes::delete_product)
@@ -46,6 +58,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::update_blog)
             .service(routes::delete_blog)
             .service(routes::add_user)
+            .service(routes::login_handler)
     })
     .bind("127.0.0.1:8080")?
     .run()

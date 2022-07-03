@@ -7,15 +7,15 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug executable 'hello-rust'",
+            "name": "Debug executable 'server'",
             "cargo": {
                 "args": [
                     "build",
-                    "--bin=hello-rust",
-                    "--package=hello-rust"
+                    "--bin=server",
+                    "--package=server"
                 ],
                 "filter": {
-                    "name": "hello-rust",
+                    "name": "server",
                     "kind": "bin"
                 }
             },
@@ -25,16 +25,16 @@
         {
             "type": "lldb",
             "request": "launch",
-            "name": "Debug unit tests in executable 'hello-rust'",
+            "name": "Debug unit tests in executable 'server'",
             "cargo": {
                 "args": [
                     "test",
                     "--no-run",
-                    "--bin=hello-rust",
-                    "--package=hello-rust"
+                    "--bin=server",
+                    "--package=server"
                 ],
                 "filter": {
-                    "name": "hello-rust",
+                    "name": "server",
                     "kind": "bin"
                 }
             },

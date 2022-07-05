@@ -6,12 +6,14 @@ import { Form, Input, Button, message } from 'antd';
 import { Article } from "../type";
 import styles from './index.less';
 import apiClient from '@/utils/axios';
+// import { useHistory } from "umi";
 
 /** 文章录入-MarkDown */
 const EditedArticle = () => {
     const [form] = Form.useForm();
     const mdEditor = React.useRef(null);
     const [value, setValue] = React.useState("");
+    // const history = useHistory()
 
     const save = useCallback(async () => {
         const formItemObj = await form.validateFields()
@@ -24,8 +26,9 @@ const EditedArticle = () => {
             .then((res) => {
                 if (res) message.success("保存成功");
             })
-            .catch((err) => { });
-        history.back();
+            .catch((err) => {
+                if (err) message.error("保存成功");
+            });
     }, [value])
 
     const handleEditorChange = useCallback(({ html, text }: { html: string, text: string }) => {

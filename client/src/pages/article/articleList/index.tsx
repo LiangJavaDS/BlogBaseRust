@@ -1,9 +1,8 @@
 import React, { FC, memo, useCallback, useEffect, useState } from "react";
-import { getRequest } from "@/utils/axios";
 import { history } from 'umi';
 import { formatTime } from "@/utils/time";
 import { Title, DateWrapper, Link, MetaWrapper } from "./styles";
-import useArticleCatalogue from '@/pages/article/hooks/useArticleCatalogue'
+import useArticleCatalogue from '@/pages/article/articleList/useArticleCatalogue'
 import { ArticleSummary } from "./type";
 
 
@@ -43,8 +42,7 @@ type ReadOnlyArticleProps = {}
 
 /** 文章目录 */
 const ArticleCatalogue: FC<ReadOnlyArticleProps> = memo(() => {
-    const { loading, error, data } = useArticleCatalogue()
-    if (error) return <span>Failed</span >;
+    const { loading, data } = useArticleCatalogue()
     if (!data || loading) return <span>Loading...</span >
     return (
         <div>

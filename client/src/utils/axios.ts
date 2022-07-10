@@ -1,54 +1,10 @@
 import axios from "axios";
 import { getToken } from "./auth";
 
-const linAddress = "http://127.0.0.1:8080/"
-
-/** 拼接请求 */
-const joiningLinAddress = (apiName: string) => {
-    return `${linAddress}${apiName}`
-}
-
-/** get请求 */
-export async function getRequest<T>(address: string) {
-    try {
-        const response = await axios.get(joiningLinAddress(address));
-        const { data }: { data: T } = response
-        return data
-    } catch (error) {
-        console.error(error);
-        return undefined
-    }
-}
-
-/** post请求 */
-export async function postRequest<T>(address: string, body: any) {
-    try {
-        const response = await axios.post(joiningLinAddress(address), body);
-        const { data }: { data: T } = response
-        return data
-    } catch (error) {
-        console.error(error);
-        return undefined
-    }
-}
-
-const endPoints = {
-    test: 'http://127.0.0.1:8080/',
-    prod: '',
-    staging: ''
-}
-
-const instance = axios.create({
-    baseURL: endPoints.test,
-    timeout: 30000,
-})
-
-
-//请求拦截器  
-instance.interceptors.request.use(
+//请求拦截器
+axios.interceptors.request.use(
     (config) => {
-        console.log('7878config', config);
-
+        // console.log('7878config', config);
         if (config.method?.includes('post') && config.headers) {
             const token = getToken();
             if (token) config.headers.Authorization = `Bearer ${token}`;
@@ -61,18 +17,42 @@ instance.interceptors.request.use(
     }
 )
 
-//响应拦截器 
-instance.interceptors.response.use(
+//响应拦截器
+axios.interceptors.response.use(
     (res) => {
         return res
     },
     (err) => {
         if (err.response.status === 403) {
-            // 统一处理未授权请求，跳转到登录界面 
+            // 统一处理未授权请求，跳转到登录界面
             document.location = '/login';
         }
         return Promise.reject(err)
     }
 )
 
-export default instance;
+/** get请求 */
+export async function getRequest<T>(address: string) {
+    try {
+        const response = await axios.get(address);
+        const { data }: { data: T } = response
+        return data
+    } catch (error) {
+        console.error(error);
+        return undefined
+    }
+}
+
+/** post请求 */
+export async function postRequest<T>(address: string, body: any) {
+    try {
+        const response = await axios.post(address, body);
+        const { data }: { data: T } = response
+        return data
+    } catch (error) {
+        console.error(error);
+        return undefined
+    }
+}
+
+export default axios;

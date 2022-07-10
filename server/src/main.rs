@@ -28,7 +28,8 @@ async fn main() -> std::io::Result<()> {
         App::new()
             .wrap(
                 Cors::default()
-                    .allowed_origin("http://localhost:8000")
+                    // .allowed_origin("http://localhost:8000")
+                    .supports_credentials()
                     .allowed_methods(vec!["GET", "POST", "DELETE"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
                     .allowed_header(header::CONTENT_TYPE)
@@ -60,6 +61,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::add_user)
             .service(routes::login_handler)
     })
+    // .bind("0.0.0.0:8080")?
     .bind("127.0.0.1:8080")?
     .run()
     .await

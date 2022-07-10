@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArticleSummary } from "@/pages/article/articleList/type";
 import apiClient from '@/utils/axios';
+import request from 'umi-request';
 
 const useArticleCatalogue = () => {
     const [data, setData] = useState<ArticleSummary[]>([]);
@@ -11,11 +12,10 @@ const useArticleCatalogue = () => {
         setLoading(true);
         setData([]);
         setError(null);
-        apiClient
-            .get('get_all_blog_titles')
+        request('api/get_all_blog_titles')
             .then((res) => {
                 setLoading(false);
-                setData(res.data)
+                if (Array.isArray(res)) setData(res)
             })
             .catch((err) => {
                 setLoading(false);

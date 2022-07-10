@@ -52,7 +52,7 @@ const MatchPath: FC<MatchPathProps> = ({ route }) => {
         <>
             <Header>
                 我是头部
-                <Button onClick={goToAddUser}>新增用户</Button>
+                {/* <Button onClick={goToAddUser}>新增用户</Button> */}
                 <Button onClick={addBlog}>新增博客</Button>
                 <Button onClick={login}>登录</Button>
             </Header>

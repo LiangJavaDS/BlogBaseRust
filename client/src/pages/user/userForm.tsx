@@ -20,7 +20,7 @@ const UserForm: FC<UserFormProps> = () => {
         if (!username || !password || !checkedPassword || !email) return
         // 两次密码是否相同
         if (checkedPassword !== password) return
-        const data = await postRequest("add_user", { username, password, email })
+        const data = await postRequest("api/add_user", { username, password, email })
         if (!data) return
         message.success("保存成功");
         // history.back();

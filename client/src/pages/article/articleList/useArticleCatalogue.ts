@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { ArticleSummary } from "@/pages/article/articleList/type";
 import { getRequest } from "@/utils/axios";
+// import axios from "axios";
 
 const useArticleCatalogue = () => {
     const [data, setData] = useState<ArticleSummary[]>([]);

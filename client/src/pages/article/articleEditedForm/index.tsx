@@ -5,7 +5,7 @@ import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { Article } from "../type";
 import styles from './index.less';
-import apiClient from '@/utils/axios';
+import axios from "axios";
 // import { useHistory } from "umi";
 
 /** 文章录入-MarkDown */
@@ -21,13 +21,13 @@ const EditedArticle = () => {
         const { title, tag } = formItemObj as Article
         if (!title || !value || !tag) return
         // const data = await postRequest("add_blog", { title, tag, content: value })
-        apiClient
-            .post("add_blog", { title, tag, content: value })
+        axios
+            .post("api/add_blog", { title, tag, content: value })
             .then((res) => {
                 if (res) message.success("保存成功");
             })
             .catch((err) => {
-                if (err) message.error("保存成功");
+                if (err) message.error("保存失败，请重新登录");
             });
     }, [value])
 

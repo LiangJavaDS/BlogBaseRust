@@ -1,7 +1,7 @@
 import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { LoginParams } from './type';
-import apiClient from '@/utils/axios';
+import axios from "axios";
 
 type LoginFormProps = {}
 /** 登录 */
@@ -14,11 +14,11 @@ const LoginForm: FC<LoginFormProps> = () => {
         if (!formItemObj) return
         const { username, password, } = formItemObj as LoginParams
         if (!username || !password) return
-        apiClient
-            .post("login", { username, password })
+        axios
+            .post("api/login", { username, password })
             .then((res) => {
-                message.success("登录成功");
                 if (res.data.token) {
+                    message.success("登录成功");
                     localStorage.setItem('token', res.data.token);
                     console.log('7878res', res);
                 }

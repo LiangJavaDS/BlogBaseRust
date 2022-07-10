@@ -1,8 +1,5 @@
-import React, { FC, useCallback, useEffect, useState } from "react";
-import { Form, Input, Button } from 'antd';
-import { getRequest } from "@/utils/axios";
+import React, { FC } from "react";
 import { useLocation } from "umi";
-import { Article } from "../type";
 import ReactMarkdown from "react-markdown";
 import { BlogWrapper, Title } from "./styles";
 import useArticleCatalogue from "./useArticleDetail";

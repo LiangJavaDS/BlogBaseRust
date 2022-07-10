@@ -23,6 +23,8 @@ async fn main() -> std::io::Result<()> {
     let database_pool = r2d2::Pool::builder()
         .build(ConnectionManager::<SqliteConnection>::new(database_url))
         .expect("Failed to create pool.");
+    // web框架启动地址
+    let bind_address = std::env::var("BIND_ADDRESS").expect("can not find bindAddress");
     // 请求
     HttpServer::new(move || {
         App::new()
@@ -62,7 +64,7 @@ async fn main() -> std::io::Result<()> {
             .service(routes::login_handler)
     })
     // .bind("0.0.0.0:8080")?
-    .bind("127.0.0.1:8080")?
+    .bind(bind_address)?
     .run()
     .await
 }

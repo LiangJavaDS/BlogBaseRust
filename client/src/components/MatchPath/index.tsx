@@ -1,13 +1,12 @@
 import React, { FC, useCallback, useMemo } from 'react';
 import ArticleCatalogue from "@/pages/article/articleList/index";
-import { Button } from 'antd';
 import { history } from 'umi';
 import { RouteProps } from 'umi/node_modules/@types/react-router';
 import { connect } from 'dva';
 import ArticleDetail from '@/pages/article/articleDetail/index';
 import ArticleEditedForm from '@/pages/article/articleEditedForm/index';
 import UserForm from '@/pages/user/userForm';
-import { Header, Body, Footer } from './styles';
+import { Header, Body, Footer, AntdButton, BlogName, FooterLink } from './styles';
 import LoginForm from "@/pages/login/index";
 
 type MatchPathProps = {
@@ -51,16 +50,22 @@ const MatchPath: FC<MatchPathProps> = ({ route }) => {
     return (
         <>
             <Header>
-                我是头部
                 {/* <Button onClick={goToAddUser}>新增用户</Button> */}
-                <Button onClick={addBlog}>新增博客</Button>
-                <Button onClick={login}>登录</Button>
+                <BlogName>
+                    {/* 梁凉凉 Blog */}
+                </BlogName>
+                <div>
+                    <AntdButton onClick={addBlog}>新增博客</AntdButton>
+                    <AntdButton onClick={login}>登录</AntdButton>
+                </div>
             </Header>
             <Body>
                 {bodyComponent}
             </Body>
             <Footer>
-                我是底部
+                <FooterLink onClick={() => window.open("https://beian.miit.gov.cn")}>
+                    鲁ICP备2022022109号 © 2022 HY Liang
+                </FooterLink >
             </Footer>
         </>
     );

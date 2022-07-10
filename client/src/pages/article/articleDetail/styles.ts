@@ -5,7 +5,6 @@ export const BlogWrapper = styled.div`
     position: relative;
     margin: 0 auto;
     width: 100%;
-    max-width: 960px;
 `
 
 export const Title = styled.h1`
@@ -19,5 +18,4 @@ export const Footer = styled.div`
     height: 3rem;
     bottom: 0;
     width: 100%;
-    max-width: 960px;
 `

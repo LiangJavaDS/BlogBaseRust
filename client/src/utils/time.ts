@@ -8,6 +8,6 @@ export const formatTime = (time: string) => {
     if (diffTime <= 59) return "刚刚"
     if (diffTime < 60 * 60) return `${Math.floor(diffTime / 60)}分钟前`
     if (diffTime < 24 * 60 * 60) return `${Math.floor(diffTime / 60 / 60)}小时前`
-    if (diffTime < 30 * 24 * 60 * 60) return `${Math.floor(diffTime / 60 / 60)}天前`
+    if (diffTime < 30 * 24 * 60 * 60) return `${Math.floor(diffTime / 24 / 60 / 60)}天前`
     return moment(time).format('YYYY--MM-DD hh:mm:ss');
 }

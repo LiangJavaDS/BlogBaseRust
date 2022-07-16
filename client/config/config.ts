@@ -10,9 +10,9 @@ export default defineConfig({
     fastRefresh: {},
     proxy: {
         '/api': {
-            'target': 'http://127.0.0.1:8080/',
-            'changeOrigin': true,
-            'pathRewrite': { '^/api': '' },
+            target: 'http://127.0.0.1:8080',
+            changeOrigin: true,
+            pathRewrite: { '^/api': '' },
         }
     }
     // 加速热更新，针对dev，这么配，原理是使用了webpack5的Module Federation打包提速方案，原理是将应用的依赖构建为一个Module Federation的remote应用，免去热更新时对依赖的编译

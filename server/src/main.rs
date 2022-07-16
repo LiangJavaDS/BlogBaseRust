@@ -31,12 +31,11 @@ async fn main() -> std::io::Result<()> {
             .wrap(
                 Cors::default()
                     // .allowed_origin("http://localhost:8000")
-                    .supports_credentials()
-                    .allowed_methods(vec!["GET", "POST", "DELETE"])
+                    .allow_any_origin()
+                    .allowed_methods(vec!["GET", "POST", "DELETE","PUT"])
                     .allowed_headers(vec![header::AUTHORIZATION, header::ACCEPT])
                     .allowed_header(header::CONTENT_TYPE)
                     .max_age(3600),
-                //  .supports_credentials(), // Allow the cookie auth.
             )
             // .app_data(web::PayloadConfig::default().limit(10000))
             // .wrap_fn(|req, srv| {

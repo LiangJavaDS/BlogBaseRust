@@ -22,6 +22,6 @@ export default [
     {
         path: '/login',
         name: '登录',
-        component: '@/pages/login/index',
+        component: '@/pages/index',
     }
 ]

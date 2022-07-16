@@ -30,24 +30,26 @@ const LoginForm: FC<LoginFormProps> = () => {
         // message.success("登录成功");
     }, [])
 
-    return <div>
-        <Form form={form} name="basic">
-            <Form.Item
-                label="用户名"
-                name="username"
-                rules={[{ required: true, message: '请输入用户名!' }]}
-            >
-                <Input />
-            </Form.Item>
-            <Form.Item
-                label="密码"
-                name="password"
-                rules={[{ required: true, message: '请输入密码!' }]}
-            >
-                <Input />
-            </Form.Item>
-        </Form>
-        <Button onClick={login}>登录</Button>
-    </div>
+    return (
+        <div>
+            <Form form={form} name="basic">
+                <Form.Item
+                    label="用户名"
+                    name="username"
+                    rules={[{ required: true, message: '请输入用户名!' }]}
+                >
+                    <Input placeholder="请输入用户名" />
+                </Form.Item>
+                <Form.Item
+                    label="密码"
+                    name="password"
+                    rules={[{ required: true, message: '请输入密码!' }]}
+                >
+                    <Input.Password placeholder="请输入密码" />
+                </Form.Item>
+            </Form>
+            <Button onClick={login}>登录</Button>
+        </div>
+    )
 }
 export default LoginForm

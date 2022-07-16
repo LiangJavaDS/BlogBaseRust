@@ -1,5 +1,5 @@
 
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import MatchPath from '@/components/MatchPath/index';
 import { RouteProps } from 'umi/node_modules/@types/react-router';
 

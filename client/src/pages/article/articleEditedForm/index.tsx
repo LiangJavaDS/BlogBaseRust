@@ -40,7 +40,10 @@ const EditedArticle = () => {
 
     return (
         <div>
-            <Form form={form} name="basic">
+            <Form
+                form={form}
+                name="basic"
+            >
                 <Form.Item
                     label="标题"
                     name="title"

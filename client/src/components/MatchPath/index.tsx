@@ -27,7 +27,7 @@ const MatchPath: FC<MatchPathProps> = ({ route }) => {
     }, [])
 
     /** 跳转至登录页面 */
-    const login = useCallback(() => {
+    const handleLogin = useCallback(() => {
         history.push({ pathname: '/login' });
     }, [])
 
@@ -56,7 +56,7 @@ const MatchPath: FC<MatchPathProps> = ({ route }) => {
                 </BlogName>
                 <div>
                     <AntdButton onClick={addBlog}>新增博客</AntdButton>
-                    <AntdButton onClick={login}>登录</AntdButton>
+                    <AntdButton onClick={handleLogin}>登录</AntdButton>
                 </div>
             </Header>
             <Body>

@@ -137,6 +137,7 @@ pub struct LoginJson {
 #[derive(Serialize)]
 pub struct LoginResponse {
     pub token: String,
+    pub expiresIn: i64,
 }
 
 #[derive(Debug, Deserialize, Serialize)]

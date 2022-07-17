@@ -4,6 +4,7 @@ import { formatTime } from "@/utils/time";
 import { Title, DateWrapper, Link, MetaWrapper } from "./styles";
 import useArticleCatalogue from '@/pages/article/articleList/useArticleCatalogue'
 import { ArticleSummary } from "./type";
+import axios from "axios";
 // import axios from "axios";
 
 
@@ -24,9 +25,9 @@ const ArticleOverview: FC<ArticleOverviewProps> = memo(({ article }) => {
         });
     }, [])
 
-    // const deleteArticle = useCallback(() => {
-    //     if (article.id) axios.delete(`api/delete_blog/${article.id}`)
-    // }, [])
+    const deleteArticle = useCallback(() => {
+        if (article.id) axios.delete(`api/delete_blog/${article.id}`)
+    }, [])
 
     return (
         <li>

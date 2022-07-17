@@ -385,9 +385,13 @@ pub async fn login(
 
     match target_user {
         Ok(u) => {
-            let token = create_jwt(&username_str, &password_str)
+            let seconds = 60 * 60 * 6;
+            let token = create_jwt(&username_str, &password_str, seconds)
                 .map_err(|e| actix_web::error::ErrorBadRequest(e))?;
-            let res = LoginResponse { token: token };
+            let res = LoginResponse {
+                token: token,
+                expiresIn: seconds,
+            };
             Ok(res)
         }
         Err(e) => Err(actix_web::error::ErrorBadRequest(e)),
@@ -398,12 +402,12 @@ pub async fn login(
 const JWT_SECRET: &[u8] = b"secret";
 type JwtResult<T> = std::result::Result<T, jwtError::AuthError>;
 /** 生成token */
-pub fn create_jwt(uid: &str, user_name: &String) -> JwtResult<String> {
+pub fn create_jwt(uid: &str, user_name: &String, expires_in: i64) -> JwtResult<String> {
     let expiration = Utc::now()
-        .checked_add_signed(chrono::Duration::seconds(60))
+        .checked_add_signed(chrono::Duration::seconds(expires_in))
         .expect("valid timestamp")
         .timestamp();
-
+        
     let claims = Claims {
         uid: uid.to_owned(),
         user_name: user_name.to_string(),

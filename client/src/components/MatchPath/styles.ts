@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { Button } from 'antd';
 import { ContentCenterDiv } from '../PubComponents';
 
-export const Header = styled.header`
+export const HeaderWrapper = styled.header`
     display: flex;
     justify-content: space-between;
     flex: 0 0 auto;
@@ -12,7 +12,7 @@ export const Header = styled.header`
     /* text-align: end; */
 `
 
-export const Body = styled.div`   
+export const BodyWrapper = styled.div`
     margin: 0 auto;
     padding: 40px;
     flex: 1 1 auto;
@@ -22,12 +22,12 @@ export const Body = styled.div`
     background: linear-gradient(#E2E5FD, #F7F6FD);
 `
 
-export const Footer = styled.footer`
+export const FooterWrapper = styled.footer`
     height: 3rem;
     width: 100%;
 `
 
-export const BlogName = styled.footer`
+export const BlogLabelWrapper = styled.footer`
     font-size: 21px;
     font-family: "fangsong";
     font-weight: bold;

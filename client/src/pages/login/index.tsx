@@ -2,10 +2,25 @@ import React, { FC, useCallback } from "react";
 import { Form, Input, Button, message } from 'antd';
 import { LoginParams } from './type';
 import axios from "axios";
+import { connect } from "dva";
+import { ConnectState } from "@/models/connect";
+import type { Dispatch, UserModelState } from 'umi';
+import moment from "moment";
 
-type LoginFormProps = {}
+type LoginFormProps = {
+    dispatch: Dispatch,
+    user: UserModelState
+}
+
+type LoginResponse = {
+    data: {
+        token: string,
+        expiresIn: number
+    }
+}
+
 /** 登录 */
-const LoginForm: FC<LoginFormProps> = () => {
+const LoginForm: FC<LoginFormProps> = ({ dispatch, user }) => {
 
     const [form] = Form.useForm();
 
@@ -16,15 +31,22 @@ const LoginForm: FC<LoginFormProps> = () => {
         if (!username || !password) return
         axios
             .post("api/login", { username, password })
-            .then((res) => {
-                if (res.data.token) {
-                    message.success("登录成功");
+            .then((res: LoginResponse) => {
+                if (res.data?.token && res.data?.expiresIn) {
                     localStorage.setItem('token', res.data.token);
-                    console.log('7878res', res);
+                    // 计算过期时间
+                    dispatch({
+                        type: 'user/saveOutDate',
+                        payload: moment().add(res.data.expiresIn, 's')
+                    })
+                    dispatch({
+                        type: 'user/saveLoginState',
+                        payload: true
+                    })
+                    message.success("登录成功");
                 }
             })
-            .catch((err) => {
-            });
+            .catch((err) => { });
         // const data = await postRequest("login", { username, password })
         // if (!data) return
         // message.success("登录成功");
@@ -52,4 +74,4 @@ const LoginForm: FC<LoginFormProps> = () => {
         </div>
     )
 }
-export default LoginForm
+export default connect(({ user }: ConnectState) => ({ user }))(LoginForm) 
